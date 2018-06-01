@@ -2,13 +2,13 @@ package gexec
 
 import (
 	"bytes"
+	"io"
 	"os/exec"
-	"strings"
 )
 
 type Options struct {
 	Dir   string
-	Stdin string
+	Stdin io.Reader
 }
 
 func Exec(name string, args ...string) (*Result, error) {
@@ -32,8 +32,8 @@ func ExecWithOpt(o *Options, name string, args ...string) (*Result, error) {
 		cmd.Dir = o.Dir
 	}
 
-	if o.Stdin != "" {
-		cmd.Stdin = strings.NewReader(o.Stdin)
+	if o.Stdin != nil {
+		cmd.Stdin = o.Stdin
 	}
 
 	if err := cmd.Run(); err != nil {
